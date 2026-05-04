@@ -1,0 +1,62 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+        CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+    image: ${WEB_IMAGE:-trustshop-web:local}
+    environment:
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+    expose:
+      - "3000"
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: ${API_IMAGE:-trustshop-api:local}
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-trustshop}:${POSTGRES_PASSWORD:-trustshop_dev}@db:5432/${POSTGRES_DB:-trustshop}?schema=public
+      PORT: "4000"
+    expose:
+      - "4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - web
+      - api
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-trustshop}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-trustshop_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-trustshop}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

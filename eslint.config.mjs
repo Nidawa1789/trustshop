@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // NestJS (lint séparé : backend yarn lint)
+    "backend/**",
   ]),
 ]);
 
