@@ -1,46 +1,42 @@
-import { ImageIcon } from "@sanity/icons";  
+import { ImageIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const blockContentType = defineType({
-  title: 'Contenu de bloc',
-  name: 'blockContent',
-  type: 'array',
+  title: "Contenu de bloc",
+  name: "blockContent",
+  type: "array",
   of: [
     defineArrayMember({
-      type: 'block',
+      type: "block",
       styles: [
-        {title: 'Normal', value: 'normal'},
-        {title: 'H1', value: 'h1'},
-        {title: 'H2', value: 'h2'},
-        {title: 'H3', value: 'h3'},
-        {title: 'H4', value: 'h4'},
-        {title: "Quote", value: 'blockquote'},
+        { title: "Normal", value: "normal" },
+        { title: "H1", value: "h1" },
+        { title: "H2", value: "h2" },
+        { title: "H3", value: "h3" },
+        { title: "H4", value: "h4" },
+        { title: "Quote", value: "blockquote" },
       ],
-      lists: [
-        {title: 'Bullet', value: 'bullet'},
-      ],
+      lists: [{ title: "Bullet", value: "bullet" }],
       marks: {
         decorators: [
-          { title: 'Strong', value: 'strong' },
-          { title: 'Emphasis', value: 'em' },
+          { title: "Strong", value: "strong" },
+          { title: "Emphasis", value: "em" },
         ],
         annotations: [
           {
-            title: 'URl', name: 'link', type: 'object',
-            fields: [
-              { title: 'URL', name: 'href', type: 'url' },
-            ]
+            title: "URl",
+            name: "link",
+            type: "object",
+            fields: [{ title: "URL", name: "href", type: "url" }],
           },
         ],
       },
     }),
     defineArrayMember({
-      type: 'image',
+      type: "image",
       icon: ImageIcon,
-      options: {hotspot: true},
-      fields: [
-        {name: 'alt', type: 'string', title: 'Alternative Text'},
-      ],
+      options: { hotspot: true },
+      fields: [{ name: "alt", type: "string", title: "Alternative Text" }],
     }),
   ],
-}) 
+});

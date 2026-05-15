@@ -2,53 +2,53 @@ import { TagIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
 export const categoryType = defineType({
-  name: 'category',
-  title: 'Catégorie',
-  type: 'document',
+  name: "category",
+  title: "Catégorie",
+  type: "document",
   icon: TagIcon,
   fields: [
     defineField({
-      name: 'title',
-      type: 'string',
+      name: "title",
+      type: "string",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'slug',
-      type: 'slug',
-      options:{
+      name: "slug",
+      type: "slug",
+      options: {
         source: "title",
         maxLength: 96,
       },
-      validation: (Rule) => Rule.required()
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'description',
-      type: 'text',
+      name: "description",
+      type: "text",
     }),
     defineField({
-      name: 'range',
-      type: 'number',
-      description:"À partir de"
+      name: "range",
+      type: "number",
+      description: "À partir de",
     }),
     defineField({
-      name: 'featured',
-      type: 'boolean',
+      name: "featured",
+      type: "boolean",
       initialValue: false,
     }),
     defineField({
-      name: 'image',
-      title: 'Category Image',
-      type: 'image',
-      options:{
+      name: "image",
+      title: "Category Image",
+      type: "image",
+      options: {
         hotspot: true,
       },
     }),
   ],
   preview: {
     select: {
-      title: 'title',
-      subtitle: 'description',
-      media: 'image',
+      title: "title",
+      subtitle: "description",
+      media: "image",
     },
     // prepare(selection) {
     //   const {title, subtitle, media} = selection
@@ -59,4 +59,4 @@ export const categoryType = defineType({
     //   }
     // },
   },
-})
+});

@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import dynamic from 'next/dynamic'
+import dynamic from "next/dynamic";
 
-const Studio = dynamic(() => import('./Studio'), { ssr: false })
+const Studio = dynamic(() => import("./Studio"), { ssr: false });
 
 export default function StudioGate() {
-  return <Studio />
+  return <Studio />;
 }

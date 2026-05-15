@@ -1,69 +1,69 @@
-import { DocumentTextIcon } from "@sanity/icons";  
+import { DocumentTextIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
 export const blogType = defineType({
-  name: 'blog',
-  title: 'Blog',
-  type: 'document',
+  name: "blog",
+  title: "Blog",
+  type: "document",
   icon: DocumentTextIcon,
   fields: [
     defineField({
-      name: 'title',
-      type: 'string',
+      name: "title",
+      type: "string",
     }),
     defineField({
-      name: 'slug',
-      type: 'slug',
-      options:{
-        source: "title"
+      name: "slug",
+      type: "slug",
+      options: {
+        source: "title",
       },
     }),
     defineField({
-      name: 'author',
-      type: 'reference',
-      to: [{type: 'author'}]
+      name: "author",
+      type: "reference",
+      to: [{ type: "author" }],
     }),
     defineField({
-      name: 'mainImage',
-      type: 'image',
-      options:{
+      name: "mainImage",
+      type: "image",
+      options: {
         hotspot: true,
       },
     }),
     defineField({
-      name: 'blogcategories',
-      type: 'array',
-      of: [{type: 'reference', to: [{type: 'blogCategory'}]}]
+      name: "blogcategories",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "blogCategory" }] }],
     }),
     defineField({
-      name: 'publishedAt',
-      type: 'datetime',
+      name: "publishedAt",
+      type: "datetime",
     }),
     defineField({
-      name:"isLatest",
-      title: 'Latest Blog',
+      name: "isLatest",
+      title: "Latest Blog",
       type: "boolean",
       description: "Toggle to Latest on or off",
       initialValue: true,
     }),
     defineField({
-      name: 'body',
-      type: 'blockContent',
+      name: "body",
+      type: "blockContent",
     }),
   ],
   preview: {
     select: {
-      title: 'title',
-      author: 'author.name',
-      isLatest: 'isLatest',
-      media: 'mainImage',
+      title: "title",
+      author: "author.name",
+      isLatest: "isLatest",
+      media: "mainImage",
     },
     prepare(selection) {
-      const { author, isLatest } = selection
+      const { author, isLatest } = selection;
       return {
         ...selection,
-        subtitle: author && `${isLatest ? 'Latest | ' : ''}By ${author}`,
-      }
+        subtitle: author && `${isLatest ? "Latest | " : ""}By ${author}`,
+      };
     },
   },
-})
+});

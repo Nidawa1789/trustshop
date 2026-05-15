@@ -31,7 +31,7 @@ export default function SiteLayout({
   return (
     <ClerkProvider>
       <div
-        className={`${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen mx-6 font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} mx-6 flex min-h-screen flex-col font-sans antialiased`}
       >
         <Header />
         <main className="flex-1">{children}</main>

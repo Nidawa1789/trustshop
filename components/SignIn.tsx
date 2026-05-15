@@ -4,7 +4,7 @@ import { SignInButton } from "@clerk/nextjs";
 const SignIn = () => {
   return (
     <SignInButton mode="modal">
-      <span className="text-sm font-semibold hover:text-lightColor hoverEffect cursor-pointer">
+      <span className="hover:text-lightColor hoverEffect cursor-pointer text-sm font-semibold">
         Connexion
       </span>
     </SignInButton>

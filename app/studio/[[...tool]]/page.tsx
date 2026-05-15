@@ -7,10 +7,10 @@
  * https://github.com/sanity-io/next-sanity
  */
 
-import StudioGate from './StudioGate'
+import StudioGate from "./StudioGate";
 
-export { metadata, viewport } from 'next-sanity/studio'
+export { metadata, viewport } from "next-sanity/studio";
 
 export default function StudioPage() {
-  return <StudioGate />
+  return <StudioGate />;
 }

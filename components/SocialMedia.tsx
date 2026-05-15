@@ -2,12 +2,7 @@
 
 import Link from "next/link";
 import { Bird, Briefcase, Camera, Code2, PlayCircle } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -25,11 +20,7 @@ const socialMediaData = [
   { title: "GitHub", href: "https://www.github.com/trustshop", Icon: Code2 },
 ] as const;
 
-const SocialMedia = ({
-  className,
-  iconClassName,
-  tooltipClassName,
-}: Props) => {
+const SocialMedia = ({ className, iconClassName, tooltipClassName }: Props) => {
   return (
     <TooltipProvider>
       <div className={cn("flex items-center gap-3.5", className)}>
@@ -44,7 +35,7 @@ const SocialMedia = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(
-                      "rounded-full border p-2 text-muted-foreground hoverEffect hover:text-white transition-colors hover:border-shop_light_green",
+                      "text-muted-foreground hoverEffect hover:border-shop_light_green rounded-full border p-2 transition-colors hover:text-white",
                       iconClassName,
                     )}
                   >
@@ -52,7 +43,9 @@ const SocialMedia = ({
                   </Link>
                 }
               />
-              <TooltipContent className={cn("bg-white text-darkColor font-semibold ",tooltipClassName)}>
+              <TooltipContent
+                className={cn("text-darkColor bg-white font-semibold", tooltipClassName)}
+              >
                 <p>{item.title}</p>
               </TooltipContent>
             </Tooltip>

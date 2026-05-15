@@ -1,12 +1,12 @@
-import { SearchIcon } from 'lucide-react'
-import React from 'react'
+import { SearchIcon } from "lucide-react";
+import React from "react";
 
 const SearchBar = () => {
   return (
     <div>
-      <SearchIcon className='w-5 h-5 text-shop_light_green hoverEffect'/>
+      <SearchIcon className="text-shop_light_green hoverEffect h-5 w-5" />
     </div>
-  )
-}
+  );
+};
 
-export default SearchBar
+export default SearchBar;
