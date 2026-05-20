@@ -1,9 +1,8 @@
 import React from "react";
-
+import { Title } from "./ui/text";
 import Link from "next/link";
 import Image from "next/image";
 import { banner_1 } from "@/images";
-import { Title } from "./ui/text";
 
 const HomeBanner = () => {
   return (
@@ -15,14 +14,14 @@ const HomeBanner = () => {
           Une Selection de casque audio
         </Title>
         <Link
-          href="/products"
-          className="bg-shop_dark_green/90 hover:bg-shop_dark_green hoverEffect rounded-md px-5 py-2 font-semibold text-white/90 hover:text-white"
+          href={"/shop"}
+          className="bg-shop_dark_green/90 hover:bg-shop_dark_green hoverEffect rounded-md px-5 py-2 text-sm font-semibold text-white/90 hover:text-white"
         >
           Acheter
         </Link>
       </div>
       <div>
-        <Image src={banner_1} alt="Home Banner" className="hidden w-96 md:inline-flex" />
+        <Image src={banner_1} alt="banner_1" className="hidden w-96 md:inline-flex" />
       </div>
     </div>
   );

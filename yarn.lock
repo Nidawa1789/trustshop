@@ -2669,10 +2669,18 @@
   dependencies:
     "@portabletext/plugin-input-rule" "^4.0.27"
 
-"@portabletext/react@^6.0.3", "@portabletext/react@^6.1.0":
+"@portabletext/react@^6.0.3":
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@portabletext/react/-/react-6.1.0.tgz#f67bbcd8481a0ff946a6c9245803b33fa2e87f78"
   integrity sha512-qs87L87oxz4dIWXDCEW9nTxWtsN6zkJbpsIJ5izWfE6EpJDH1WZtfHrUZyR3Ot3jwlViHNu9b3qztxFvMM2Rzg==
+  dependencies:
+    "@portabletext/toolkit" "^5.0.2"
+    "@portabletext/types" "^4.0.2"
+
+"@portabletext/react@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@portabletext/react/-/react-6.2.0.tgz#8e90d54fef244efcf41af5c64fe9eedccec7b40d"
+  integrity sha512-Z0J/AWrvg7GyDfEBQRRhi6ZpxLOsN4/QbU8KhTwfa6r2ELiRaMa4gkHE9wfs3V1ozNDrTG4IRr+8yBnHNDnAqA==
   dependencies:
     "@portabletext/toolkit" "^5.0.2"
     "@portabletext/types" "^4.0.2"
@@ -3389,6 +3397,13 @@
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/@sanity/preview-url-secret/-/preview-url-secret-4.0.5.tgz#4f0f4c96a7295ceb63d5ae43fee66498cd498ddc"
   integrity sha512-49MozhFS8U5RxnNL3+WtCgX2v554dtmoR79amzT4dYu1beV+6BQGcro1VeC+bgW9XeZCg6o2rCKbvnu7ukQbKg==
+  dependencies:
+    "@sanity/uuid" "3.0.2"
+
+"@sanity/preview-url-secret@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@sanity/preview-url-secret/-/preview-url-secret-4.0.6.tgz#c4ff30db4b7e43d4d19d57d09a779109909bd68c"
+  integrity sha512-Q0Qmag3HaLq1NVWrKw0Ey+N9OFyE4i2tS+1xLDZh5PorFx2JOrFfSwcetGKy1H+gKzQZmDEkc3TlKAOF1K5RDw==
   dependencies:
     "@sanity/uuid" "3.0.2"
 
@@ -5278,6 +5293,11 @@ date-fns@^4.1.0:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-4.1.0.tgz#64b3d83fff5aa80438f5b1a633c2e83b8a1c2d14"
   integrity sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==
 
+dayjs@^1.11.20:
+  version "1.11.20"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.20.tgz#88d919fd639dc991415da5f4cb6f1b6650811938"
+  integrity sha512-YbwwqR/uYpeoP4pu043q+LTDLFBLApUP6VxRihdfNTqu4ubqMlGDLd6ErXhEgsyvY0K6nCs7nggYumAN+9uEuQ==
+
 debounce@^1.0.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.2.1.tgz#38881d8f4166a5c5848020c11827b834bcb3e0a5"
@@ -6626,6 +6646,11 @@ groq@^5.23.0:
   version "5.24.0"
   resolved "https://registry.yarnpkg.com/groq/-/groq-5.24.0.tgz#24f0e17ea4e6691526b18636cceb3ee163c0fd43"
   integrity sha512-YMumFhEJjROiE4czCBMbno/xbQSz/phlosTJhGM/gJg7ZiR/dqAhx5nfUUt0p7ytiRokyEFc/sHT4xKIPo6HJA==
+
+groq@^5.24.0:
+  version "5.25.1"
+  resolved "https://registry.yarnpkg.com/groq/-/groq-5.25.1.tgz#06683c6fa38fb3e51952c9b200471ae734daa7dd"
+  integrity sha512-EzSkxI0r6Wf9BkdDpSpcCmuTe32PcMAZPuWyOixVnOLX4ZrapEqW/UW84SrERGDyiUbm4tmZx3s5HS3IyqAalg==
 
 gunzip-maybe@^1.4.2:
   version "1.4.2"
@@ -8084,20 +8109,20 @@ negotiator@^1.0.0:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-1.0.0.tgz#b6c91bb47172d69f93cfd7c357bbb529019b5f6a"
   integrity sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==
 
-next-sanity@^12.4.2:
-  version "12.4.2"
-  resolved "https://registry.yarnpkg.com/next-sanity/-/next-sanity-12.4.2.tgz#c48cf571da6b618c67a380fd212ab3bb64e840f2"
-  integrity sha512-onJd5MqBEUlsuqNe3fukobV0rXFnXMSWPtrxnoi5SDdnk1gbLkP6hxpNUb0Pu1wxpGnrk2a4aa2Ua3PmAc9jWg==
+next-sanity@^12.4.5:
+  version "12.4.5"
+  resolved "https://registry.yarnpkg.com/next-sanity/-/next-sanity-12.4.5.tgz#cba7e4c4dc7af5a0cf3e001d8cd0c37c41007e27"
+  integrity sha512-KXqUOfxk8FsVOzKbISRcYCqMxGbUbWO7spYjRHQxv9KyFbYH3ofMHeAvj5uojZ1it+/y2nKFcUk9s4EUOWVwbA==
   dependencies:
-    "@portabletext/react" "^6.1.0"
+    "@portabletext/react" "^6.2.0"
     "@sanity/client" "^7.22.0"
     "@sanity/comlink" "^4.0.1"
     "@sanity/presentation-comlink" "^2.0.1"
-    "@sanity/preview-url-secret" "^4.0.5"
+    "@sanity/preview-url-secret" "^4.0.6"
     "@sanity/visual-editing" "^5.3.4"
     "@sanity/webhook" "^4.0.4"
     dequal "^2.0.3"
-    groq "^5.23.0"
+    groq "^5.24.0"
     history "^5.3.0"
 
 next@16.2.4:
@@ -8881,6 +8906,11 @@ react-i18next@15.6.1:
   dependencies:
     "@babel/runtime" "^7.27.6"
     html-parse-stringify "^3.0.1"
+
+react-icons@^5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-5.6.0.tgz#27bcc4acbc836e762548d76041cf9b9fef4e3837"
+  integrity sha512-RH93p5ki6LfOiIt0UtDyNg/cee+HLVR6cHHtW3wALfo+eOHTp8RnU2kRkI6E+H19zMIs03DyxUG/GfZMOGvmiA==
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
