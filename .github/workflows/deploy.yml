@@ -20,26 +20,12 @@ jobs:
         with:
           node-version: "20"
           cache: yarn
-          cache-dependency-path: |
-            yarn.lock
-            backend/yarn.lock
+          cache-dependency-path: yarn.lock
 
-      - name: Install (frontend)
+      - name: Install
         run: yarn install --frozen-lockfile
 
-      - name: Lint (frontend)
-        run: yarn lint
-
-      - name: Install (backend)
-        working-directory: backend
-        run: yarn install --frozen-lockfile
-
-      - name: Prisma generate (backend)
-        working-directory: backend
-        run: yarn prisma:generate
-
-      - name: Lint (backend)
-        working-directory: backend
+      - name: Lint
         run: yarn lint
 
   docker-and-deploy:
@@ -53,13 +39,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Image names (lowercase, GHCR)
+      - name: Image name (lowercase, GHCR)
         id: image
         run: |
           owner_repo="${{ github.repository }}"
           lower="${owner_repo,,}"
           echo "WEB_IMAGE=${{ env.REGISTRY }}/$lower" >> "$GITHUB_OUTPUT"
-          echo "API_IMAGE=${{ env.REGISTRY }}/$lower-api" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -81,16 +66,6 @@ jobs:
             NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
             CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
 
-      - name: Build and push api
-        uses: docker/build-push-action@v6
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          push: true
-          tags: |
-            ${{ steps.image.outputs.API_IMAGE }}:latest
-            ${{ steps.image.outputs.API_IMAGE }}:${{ github.sha }}
-
       # Sur EC2 : secrets GHCR_PULL_USER + GHCR_PULL_TOKEN (PAT read:packages) si le package GHCR est privé.
       - name: Deploy on EC2
         if: vars.EC2_DEPLOY == 'true'
@@ -109,6 +84,5 @@ jobs:
               echo "${{ secrets.GHCR_PULL_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_PULL_USER }}" --password-stdin
             fi
             export WEB_IMAGE="${{ steps.image.outputs.WEB_IMAGE }}:${{ github.sha }}"
-            export API_IMAGE="${{ steps.image.outputs.API_IMAGE }}:${{ github.sha }}"
-            docker compose -f docker-compose.prod.yml pull web api
+            docker compose -f docker-compose.prod.yml pull web
             docker compose -f docker-compose.prod.yml up -d
