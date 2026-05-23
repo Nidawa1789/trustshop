@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import HomeTabBar from "./HomeTabBar";
 import { productType } from "@/constants/data";
-import { client } from "@/sanity/lib/client";
 import { AnimatePresence, motion } from "motion/react";
 import { Loader2 } from "lucide-react";
 import NoproductAvailable from "./NoproductAvailable";
@@ -15,17 +14,17 @@ const ProductGrid = () => {
   const [selectedTab, setSelectedTab] = useState(productType[0]?.value ?? "");
 
   useEffect(() => {
-    const query = `*[_type == "product" && variant == $variant] | order(name asc){
-      ...,
-      "categories": categories[]->title
-    }`;
-    const params = { variant: selectedTab };
-
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await client.fetch(query, params);
-        setProducts(response);
+        const response = await fetch(`/api/products?variant=${encodeURIComponent(selectedTab)}`);
+
+        if (!response.ok) {
+          throw new Error("Error fetching products");
+        }
+
+        const data = (await response.json()) as Product[];
+        setProducts(data);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {

@@ -1,109 +1,66 @@
 "use client";
-
-import { Brand, Category, Product } from "@/sanity.types";
-import React, { useCallback, useEffect, useState } from "react";
-import Container from "@/components/Container";
-import Title from "@/components/Title";
-import CategoryList from "@/components/shop/CategoryList";
+import { BRANDS_QUERYResult, Category, Product } from "@/sanity.types";
+import React, { useEffect, useState } from "react";
+import Container from "./Container";
+import Title from "./Title";
+import CategoryList from "./shop/CategoryList";
 import { useSearchParams } from "next/navigation";
-import BrandList from "@/components/shop/BrandList";
-import PriceList from "@/components/PriceList";
+import BrandList from "./shop/BrandList";
+import PriceList from "./PriceList";
 import { client } from "@/sanity/lib/client";
 import { Loader2 } from "lucide-react";
-import NoProductAvailable from "@/components/NoproductAvailable";
-import ProductCard from "@/components/ProductCard";
+import NoProductAvailable from "./NoproductAvailable";
+import ProductCard from "./ProductCard";
 
-const Shop = () => {
+interface Props {
+  categories: Category[];
+  brands: BRANDS_QUERYResult;
+}
+const Shop = ({ categories, brands }: Props) => {
   const searchParams = useSearchParams();
   const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
-
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [brands, setBrands] = useState<Brand[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
-
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categoryParams || null);
-
   const [selectedBrand, setSelectedBrand] = useState<string | null>(brandParams || null);
-
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
-
-  const fetchProducts = useCallback(async () => {
-    await Promise.resolve();
+  const fetchProducts = async () => {
     setLoading(true);
-
     try {
       let minPrice = 0;
       let maxPrice = 10000;
-
       if (selectedPrice) {
         const [min, max] = selectedPrice.split("-").map(Number);
         minPrice = min;
         maxPrice = max;
       }
-
       const query = `
       *[_type == 'product' 
         && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
         && (!defined($selectedBrand) || references(*[_type == "brand" && slug.current == $selectedBrand]._id))
-        && (!defined($selectedPrice) || (price >= $minPrice && price <= $maxPrice))
+        && price >= $minPrice && price <= $maxPrice
       ] 
       | order(name asc) {
-        ...,
-        "categories": categories[]->title
+        ...,"categories": categories[]->title
       }
     `;
-
       const data = await client.fetch(
         query,
-        { selectedCategory, selectedBrand, selectedPrice, minPrice, maxPrice },
+        { selectedCategory, selectedBrand, minPrice, maxPrice },
         { next: { revalidate: 0 } },
       );
-
       setProducts(data);
     } catch (error) {
-      console.log("Erreur lors du chargement des produits", error);
+      console.log("Shop product fetching Error", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchProducts();
   }, [selectedCategory, selectedBrand, selectedPrice]);
-
-  const fetchFilters = useCallback(async () => {
-    try {
-      const [categoriesData, brandsData] = await Promise.all([
-        client.fetch<Category[]>(
-          `*[_type == 'category'] | order(title asc) {
-            ...,
-            "productCount": count(*[_type == "product" && references(^._id)])
-          }`,
-        ),
-        client.fetch<Brand[]>(`*[_type == 'brand'] | order(title asc)`),
-      ]);
-
-      setCategories(categoriesData ?? []);
-      setBrands(brandsData ?? []);
-    } catch (error) {
-      console.log("Erreur lors du chargement des filtres", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      void fetchProducts();
-    }, 0);
-
-    return () => window.clearTimeout(timeout);
-  }, [fetchProducts]);
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      void fetchFilters();
-    }, 0);
-
-    return () => window.clearTimeout(timeout);
-  }, [fetchFilters]);
-
   return (
     <div className="border-t">
       <Container className="mt-5">
@@ -112,7 +69,6 @@ const Shop = () => {
             <Title className="text-lg tracking-wide uppercase">
               Trouvez les produits selon vos besoins
             </Title>
-
             {(selectedCategory !== null || selectedBrand !== null || selectedPrice !== null) && (
               <button
                 onClick={() => {
@@ -127,7 +83,6 @@ const Shop = () => {
             )}
           </div>
         </div>
-
         <div className="border-t-shop_dark_green/50 flex flex-col gap-5 border-t md:flex-row">
           <div className="border-r-shop_btn_dark_green/50 scrollbar-hide pb-5 md:sticky md:top-20 md:h-[calc(100vh-160px)] md:min-w-64 md:self-start md:overflow-y-auto md:border-r">
             <CategoryList
@@ -135,25 +90,19 @@ const Shop = () => {
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
             />
-
             <BrandList
               brands={brands}
               setSelectedBrand={setSelectedBrand}
               selectedBrand={selectedBrand}
             />
-
             <PriceList setSelectedPrice={setSelectedPrice} selectedPrice={selectedPrice} />
           </div>
-
           <div className="flex-1 pt-5">
             <div className="scrollbar-hide h-[calc(100vh-160px)] overflow-y-auto pr-2">
               {loading ? (
                 <div className="flex flex-col items-center justify-center gap-2 bg-white p-20">
                   <Loader2 className="text-shop_dark_green h-10 w-10 animate-spin" />
-
-                  <p className="text-base font-semibold tracking-wide">
-                    Chargement des produits...
-                  </p>
+                  <p className="text-base font-semibold tracking-wide">Product is loading . . .</p>
                 </div>
               ) : products?.length > 0 ? (
                 <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 lg:grid-cols-4">

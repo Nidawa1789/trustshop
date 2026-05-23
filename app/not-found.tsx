@@ -23,7 +23,7 @@ const NotFoundPage = () => {
               href="/"
               className="bg-shop_dark_green/80 hover:bg-shop_dark_green focus:ring-amazonOrangeDark hoverEffect flex w-full items-center justify-center rounded-md border border-transparent px-4 py-2 text-sm font-semibold text-white focus:ring-2 focus:ring-offset-2 focus:outline-none"
             >
-              Aller à la page d&apos;accueil de Shopcart
+              Aller à la page d&apos;accueil de Trustshop
             </Link>
             <Link
               href="/help"

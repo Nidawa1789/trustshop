@@ -1,4 +1,4 @@
-import type { Category } from "@/sanity.types";
+import type { Brand, Category } from "@/sanity.types";
 import { sanityFetch } from "../lib/live";
 import {
   BLOG_CATEGORIES,
@@ -16,11 +16,11 @@ import {
 const getCategories = async (quantity?: number): Promise<Category[]> => {
   try {
     const query = quantity
-      ? `*[_type == 'category'] | order(name asc) [0...$quantity] {
+      ? `*[_type == 'category'] | order(title asc) [0...$quantity] {
           ...,
           "productCount": count(*[_type == "product" && references(^._id)])
         }`
-      : `*[_type == 'category'] | order(name asc) {
+      : `*[_type == 'category'] | order(title asc) {
           ...,
           "productCount": count(*[_type == "product" && references(^._id)])
         }`;
@@ -35,10 +35,10 @@ const getCategories = async (quantity?: number): Promise<Category[]> => {
   }
 };
 
-const getAllBrands = async () => {
+const getAllBrands = async (): Promise<Brand[]> => {
   try {
     const { data } = await sanityFetch({ query: BRANDS_QUERY });
-    return data ?? [];
+    return (data ?? []) as Brand[];
   } catch (error) {
     console.log("Error fetching all brands:", error);
     return [];

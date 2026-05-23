@@ -5,10 +5,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./
 
 const ProductCharacteristics = async ({ product }: { product: Product | null | undefined }) => {
   const brand = await getBrand(product?.slug?.current as string);
-  console.log(brand);
 
   return (
-    <Accordion type="single" collapsible>
+    <Accordion>
       <AccordionItem value="item-1">
         <AccordionTrigger>{product?.name}: Caractéristiques</AccordionTrigger>
         <AccordionContent>

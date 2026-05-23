@@ -14,7 +14,7 @@ export const quickLinksData = [
   { title: "Aide", href: "/help" },
 ];
 export const categoriesData = [
-  { title: "Mobile", href: "mobiles" },
+  { title: "Mobile", href: "mobile" },
   { title: "Appareil", href: "appliances" },
   { title: "Smartphone", href: "smartphones" },
   { title: "Climatiseur", href: "air-conditioners" },

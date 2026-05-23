@@ -11,7 +11,7 @@ const CategoryPage = async ({ params }: { params: Promise<{ slug: string }> }) =
     <div className="py-10">
       <Container>
         <Title>
-          Products by Category:{" "}
+          Produits par catégorie:{" "}
           <span className="font-bold tracking-wide text-green-600 capitalize">{slug && slug}</span>
         </Title>
         <CategoryProducts categories={categories} slug={slug} />
