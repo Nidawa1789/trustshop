@@ -29,7 +29,7 @@ const Header = async () => {
           <Logo />
         </div>
         <HeaderMenu />
-        <div className="flex w-auto items-center justify-end gap-5 md:w-1/3">
+        <div className="flex w-auto items-center justify-end gap-3 sm:gap-5 md:w-1/3">
           <SearchBar />
           <CartIcon />
           <FavoriteButton />

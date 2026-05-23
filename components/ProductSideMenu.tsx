@@ -18,7 +18,9 @@ const ProductSideMenu = ({ product, className }: { product: Product; className?:
     if (product?._id) {
       addToFavorite(product).then(() => {
         toast.success(
-          existingProduct ? "Product removed successfully!" : "Product added successfully!",
+          existingProduct
+            ? "Produit retiré avec succès!"
+            : "Produit ajouté aux favoris avec succès!",
         );
       });
     }

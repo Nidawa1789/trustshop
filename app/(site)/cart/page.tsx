@@ -1,6 +1,6 @@
 "use client";
 
-import { createCheckoutSession, Metadata } from "@/app/actions/CreateCheckoutSession.tsx";
+import { createCheckoutSession, Metadata } from "@/app/actions/CreateCheckoutSession";
 import Container from "@/components/Container";
 import EmptyCart from "@/components/EmptyCart";
 import NoAccess from "@/components/NoAccess";
