@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/sanity.types";
+import type { ProductForCard } from "@/types/product";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { ShoppingBag } from "lucide-react";
@@ -10,7 +10,7 @@ import PriceFormatter from "./PriceFormatter";
 import QuantityButtons from "./QuantityButtons";
 
 interface Props {
-  product: Product;
+  product: ProductForCard;
   className?: string;
 }
 

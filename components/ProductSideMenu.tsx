@@ -1,18 +1,24 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Product } from "@/sanity.types";
 import useStore from "@/store";
+import type { ProductForCard } from "@/types/product";
 import { Heart } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import toast from "react-hot-toast";
 
-const ProductSideMenu = ({ product, className }: { product: Product; className?: string }) => {
+const ProductSideMenu = ({
+  product,
+  className,
+}: {
+  product: ProductForCard;
+  className?: string;
+}) => {
   const { favoriteProduct, addToFavorite } = useStore();
-  const [existingProduct, setExistingProduct] = useState<Product | null>(null);
-  useEffect(() => {
-    const availableProduct = favoriteProduct?.find((item) => item?._id === product?._id);
-    setExistingProduct(availableProduct || null);
-  }, [product, favoriteProduct]);
+  const existingProduct = useMemo(
+    () => favoriteProduct?.find((item) => item?._id === product?._id) ?? null,
+    [favoriteProduct, product],
+  );
+
   const handleFavorite = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();
     if (product?._id) {

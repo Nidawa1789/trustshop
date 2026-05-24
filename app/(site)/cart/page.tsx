@@ -55,7 +55,11 @@ const CartPage = () => {
   };
 
   useEffect(() => {
-    fetchAddresses();
+    const timeoutId = window.setTimeout(() => {
+      void fetchAddresses();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   const handleResetCart = () => {

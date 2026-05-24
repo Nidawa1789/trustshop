@@ -1,4 +1,4 @@
-import { Product } from "@/sanity.types";
+import type { ProductForCard } from "@/types/product";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import React from "react";
@@ -10,7 +10,7 @@ import Title from "./Title";
 import ProductSideMenu from "./ProductSideMenu";
 import AddToCartButton from "./AddToCartButton";
 
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({ product }: { product: ProductForCard }) => {
   const firstImage = product.images?.find((img) => img?.asset);
 
   return (
@@ -51,7 +51,10 @@ const ProductCard = ({ product }: { product: Product }) => {
       <div className="flex flex-col gap-2 p-3">
         {product?.categories && (
           <p className="text-lightText line-clamp-1 text-xs font-medium uppercase">
-            {product.categories.map((cat) => cat).join(", ")}
+            {product.categories
+              .map((cat) => (typeof cat === "string" ? cat : null))
+              .filter(Boolean)
+              .join(", ")}
           </p>
         )}
 

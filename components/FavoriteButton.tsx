@@ -1,9 +1,9 @@
 "use client";
-import { Product } from "@/sanity.types";
 import useStore from "@/store";
+import type { ProductForCard } from "@/types/product";
 import { Heart } from "lucide-react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import toast from "react-hot-toast";
 
 const FavoriteButton = ({
@@ -11,14 +11,13 @@ const FavoriteButton = ({
   product,
 }: {
   showProduct?: boolean;
-  product?: Product | null | undefined;
+  product?: ProductForCard | null | undefined;
 }) => {
   const { favoriteProduct, addToFavorite } = useStore();
-  const [existingProduct, setExistingProduct] = useState<Product | null>(null);
-  useEffect(() => {
-    const availableItem = favoriteProduct.find((item) => item?._id === product?._id);
-    setExistingProduct(availableItem || null);
-  }, [product, favoriteProduct]);
+  const existingProduct = useMemo(
+    () => favoriteProduct.find((item) => item?._id === product?._id) ?? null,
+    [favoriteProduct, product],
+  );
 
   const handleFavorite = (e: React.MouseEvent<HTMLSpanElement>) => {
     e.preventDefault();

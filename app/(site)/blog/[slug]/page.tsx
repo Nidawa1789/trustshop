@@ -13,7 +13,7 @@ import React from "react";
 
 const SingleBlogPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
-  const blog: SINGLE_BLOG_QUERYResult = await getSingleBlog(slug);
+  const blog: SINGLE_BLOG_QUERYResult | null = await getSingleBlog(slug);
   if (!blog) return notFound();
 
   return (
@@ -32,7 +32,7 @@ const SingleBlogPage = async ({ params }: { params: Promise<{ slug: string }> })
           <div>
             <div className="my-7 flex items-center gap-5 text-xs">
               <div className="group relative flex cursor-pointer items-center">
-                {blog?.blogcategories?.map((item: { title: string }, index: number) => (
+                {blog?.blogcategories?.map((item, index) => (
                   <p key={index} className="text-shop_dark_green font-semibold tracking-wider">
                     {item?.title}
                   </p>
@@ -133,8 +133,8 @@ const SingleBlogPage = async ({ params }: { params: Promise<{ slug: string }> })
                           link: ({ value, children }) => {
                             return (
                               <Link
-                                href={value.href}
-                                className="font-medium text-gray-950 underline decoration-gray-400 underline-offset-4 data-[hover]:decoration-gray-600"
+                                href={value?.href ?? "#"}
+                                className="font-medium text-gray-950 underline decoration-gray-400 underline-offset-4 data-hover:decoration-gray-600"
                               >
                                 {children}
                               </Link>
@@ -175,7 +175,7 @@ const BlogLeft = async ({ slug }: { slug: string }) => {
               key={index}
               className="text-lightColor flex items-center justify-between text-sm font-medium"
             >
-              <p>{blogcategories[0]?.title}</p>
+              <p>{blogcategories?.[0]?.title}</p>
               <p className="text-darkColor font-semibold">{`(1)`}</p>
             </div>
           ))}
@@ -184,7 +184,7 @@ const BlogLeft = async ({ slug }: { slug: string }) => {
       <div className="border-lightColor mt-10 rounded-md border p-5">
         <Title className="text-base">Articles récents</Title>
         <div className="mt-4 space-y-4">
-          {blogs?.map((blog: Blog, index: number) => (
+          {blogs?.map((blog, index) => (
             <Link
               href={`/blog/${blog?.slug?.current}`}
               key={index}
@@ -196,7 +196,7 @@ const BlogLeft = async ({ slug }: { slug: string }) => {
                   alt="imageBlog"
                   width={100}
                   height={100}
-                  className="border-shop_dark_green/10 group-hover:border-shop_dark_green hoverEffect h-16 w-16 rounded-full border-[1px] object-cover"
+                  className="border-shop_dark_green/10 group-hover:border-shop_dark_green hoverEffect h-16 w-16 rounded-full border object-cover"
                 />
               )}
               <p className="text-lightColor group-hover:text-shop_dark_green hoverEffect line-clamp-2 text-sm">

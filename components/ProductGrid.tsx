@@ -7,9 +7,9 @@ import { AnimatePresence, motion } from "motion/react";
 import { Loader2 } from "lucide-react";
 import NoproductAvailable from "./NoproductAvailable";
 import ProductCard from "./ProductCard";
-import { Product } from "@/sanity.types";
+import type { ProductForCard } from "@/types/product";
 const ProductGrid = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductForCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState(productType[0]?.value ?? "");
 
@@ -23,7 +23,7 @@ const ProductGrid = () => {
           throw new Error("Error fetching products");
         }
 
-        const data = (await response.json()) as Product[];
+        const data = (await response.json()) as ProductForCard[];
         setProducts(data);
       } catch (error) {
         console.error("Error fetching products:", error);

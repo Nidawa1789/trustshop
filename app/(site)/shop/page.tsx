@@ -1,7 +1,8 @@
 "use client";
 
-import { Brand, Category, Product } from "@/sanity.types";
-import React, { useCallback, useEffect, useState } from "react";
+import { Brand, Category } from "@/sanity.types";
+import type { ProductForCard } from "@/types/product";
+import React, { Suspense, useCallback, useEffect, useState } from "react";
 import Container from "@/components/Container";
 import Title from "@/components/Title";
 import CategoryList from "@/components/shop/CategoryList";
@@ -13,14 +14,14 @@ import { Loader2 } from "lucide-react";
 import NoProductAvailable from "@/components/NoproductAvailable";
 import ProductCard from "@/components/ProductCard";
 
-const Shop = () => {
+const ShopContent = () => {
   const searchParams = useSearchParams();
   const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductForCard[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categoryParams || null);
@@ -169,6 +170,20 @@ const Shop = () => {
         </div>
       </Container>
     </div>
+  );
+};
+
+const Shop = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-80 items-center justify-center">
+          <Loader2 className="text-shop_dark_green h-10 w-10 animate-spin" />
+        </div>
+      }
+    >
+      <ShopContent />
+    </Suspense>
   );
 };
 

@@ -1,6 +1,7 @@
 "use client";
-import { BRANDS_QUERYResult, Category, Product } from "@/sanity.types";
-import React, { useEffect, useState } from "react";
+import { BRANDS_QUERYResult, Category } from "@/sanity.types";
+import type { ProductForCard } from "@/types/product";
+import React, { useCallback, useEffect, useState } from "react";
 import Container from "./Container";
 import Title from "./Title";
 import CategoryList from "./shop/CategoryList";
@@ -20,12 +21,13 @@ const Shop = ({ categories, brands }: Props) => {
   const searchParams = useSearchParams();
   const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductForCard[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categoryParams || null);
   const [selectedBrand, setSelectedBrand] = useState<string | null>(brandParams || null);
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
-  const fetchProducts = async () => {
+
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
       let minPrice = 0;
@@ -56,11 +58,16 @@ const Shop = ({ categories, brands }: Props) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedBrand, selectedCategory, selectedPrice]);
 
   useEffect(() => {
-    fetchProducts();
-  }, [selectedCategory, selectedBrand, selectedPrice]);
+    const timeoutId = window.setTimeout(() => {
+      void fetchProducts();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [fetchProducts]);
+
   return (
     <div className="border-t">
       <Container className="mt-5">

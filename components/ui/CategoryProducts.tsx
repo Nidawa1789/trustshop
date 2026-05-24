@@ -1,13 +1,14 @@
 "use client";
-import { Category, Product } from "@/sanity.types";
+import { Category } from "@/sanity.types";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { client } from "@/sanity/lib/client";
 import { AnimatePresence, motion } from "motion/react";
 import { Loader2 } from "lucide-react";
 import ProductCard from "../ProductCard";
 import NoProductAvailable from "../NoproductAvailable";
+import type { ProductForCard } from "@/types/product";
 interface Props {
   categories: Category[];
   slug: string;
@@ -15,7 +16,7 @@ interface Props {
 
 const CategoryProducts = ({ categories, slug }: Props) => {
   const [currentSlug, setCurrentSlug] = useState(slug);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<ProductForCard[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const handleCategoryChange = (newSlug: string) => {
@@ -24,7 +25,7 @@ const CategoryProducts = ({ categories, slug }: Props) => {
     router.push(`/category/${newSlug}`, { scroll: false }); // Update URL without
   };
 
-  const fetchProducts = async (categorySlug: string) => {
+  const fetchProducts = useCallback(async (categorySlug: string) => {
     setLoading(true);
     try {
       const query = `
@@ -39,10 +40,15 @@ const CategoryProducts = ({ categories, slug }: Props) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
   useEffect(() => {
-    fetchProducts(currentSlug);
-  }, [router]);
+    const timeoutId = window.setTimeout(() => {
+      void fetchProducts(currentSlug);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [currentSlug, fetchProducts]);
 
   return (
     <div className="flex flex-col items-start gap-5 py-5 md:flex-row">
@@ -67,7 +73,7 @@ const CategoryProducts = ({ categories, slug }: Props) => {
           </div>
         ) : products?.length > 0 ? (
           <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 lg:grid-cols-5">
-            {products?.map((product: Product) => (
+            {products?.map((product) => (
               <AnimatePresence key={product._id}>
                 <motion.div>
                   <ProductCard product={product} />
