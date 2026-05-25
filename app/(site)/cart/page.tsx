@@ -15,7 +15,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Address } from "@/sanity.types";
-import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import useStore from "@/store";
 import { useAuth, useUser } from "@clerk/nextjs";
@@ -38,8 +37,13 @@ const CartPage = () => {
   const fetchAddresses = async () => {
     setLoading(true);
     try {
-      const query = `*[_type=="address"] | order(publishedAt desc)`;
-      const data = await client.fetch(query);
+      const response = await fetch("/api/addresses");
+
+      if (!response.ok) {
+        throw new Error("Error fetching addresses");
+      }
+
+      const data = (await response.json()) as Address[];
       setAddresses(data);
       const defaultAddress = data.find((addr: Address) => addr.default);
       if (defaultAddress) {

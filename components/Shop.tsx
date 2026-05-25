@@ -8,7 +8,6 @@ import CategoryList from "./shop/CategoryList";
 import { useSearchParams } from "next/navigation";
 import BrandList from "./shop/BrandList";
 import PriceList from "./PriceList";
-import { client } from "@/sanity/lib/client";
 import { Loader2 } from "lucide-react";
 import NoProductAvailable from "./NoproductAvailable";
 import ProductCard from "./ProductCard";
@@ -37,24 +36,24 @@ const Shop = ({ categories, brands }: Props) => {
         minPrice = min;
         maxPrice = max;
       }
-      const query = `
-      *[_type == 'product' 
-        && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
-        && (!defined($selectedBrand) || references(*[_type == "brand" && slug.current == $selectedBrand]._id))
-        && price >= $minPrice && price <= $maxPrice
-      ] 
-      | order(name asc) {
-        ...,"categories": categories[]->title
+
+      const params = new URLSearchParams();
+
+      if (selectedCategory) params.set("category", selectedCategory);
+      if (selectedBrand) params.set("brand", selectedBrand);
+      if (selectedPrice) params.set("price", `${minPrice}-${maxPrice}`);
+
+      const response = await fetch(`/api/products?${params.toString()}`);
+
+      if (!response.ok) {
+        throw new Error("Error fetching products");
       }
-    `;
-      const data = await client.fetch(
-        query,
-        { selectedCategory, selectedBrand, minPrice, maxPrice },
-        { next: { revalidate: 0 } },
-      );
+
+      const data = (await response.json()) as ProductForCard[];
       setProducts(data);
     } catch (error) {
       console.log("Shop product fetching Error", error);
+      setProducts([]);
     } finally {
       setLoading(false);
     }

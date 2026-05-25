@@ -9,10 +9,14 @@ import CategoryList from "@/components/shop/CategoryList";
 import { useSearchParams } from "next/navigation";
 import BrandList from "@/components/shop/BrandList";
 import PriceList from "@/components/PriceList";
-import { client } from "@/sanity/lib/client";
 import { Loader2 } from "lucide-react";
 import NoProductAvailable from "@/components/NoproductAvailable";
 import ProductCard from "@/components/ProductCard";
+
+type ShopFiltersResponse = {
+  categories?: Category[];
+  brands?: Brand[];
+};
 
 const ShopContent = () => {
   const searchParams = useSearchParams();
@@ -44,27 +48,23 @@ const ShopContent = () => {
         maxPrice = max;
       }
 
-      const query = `
-      *[_type == 'product' 
-        && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
-        && (!defined($selectedBrand) || references(*[_type == "brand" && slug.current == $selectedBrand]._id))
-        && (!defined($selectedPrice) || (price >= $minPrice && price <= $maxPrice))
-      ] 
-      | order(name asc) {
-        ...,
-        "categories": categories[]->title
+      const params = new URLSearchParams();
+
+      if (selectedCategory) params.set("category", selectedCategory);
+      if (selectedBrand) params.set("brand", selectedBrand);
+      if (selectedPrice) params.set("price", `${minPrice}-${maxPrice}`);
+
+      const response = await fetch(`/api/products?${params.toString()}`);
+
+      if (!response.ok) {
+        throw new Error("Error fetching products");
       }
-    `;
 
-      const data = await client.fetch(
-        query,
-        { selectedCategory, selectedBrand, selectedPrice, minPrice, maxPrice },
-        { next: { revalidate: 0 } },
-      );
-
+      const data = (await response.json()) as ProductForCard[];
       setProducts(data);
     } catch (error) {
       console.log("Erreur lors du chargement des produits", error);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -72,15 +72,14 @@ const ShopContent = () => {
 
   const fetchFilters = useCallback(async () => {
     try {
-      const [categoriesData, brandsData] = await Promise.all([
-        client.fetch<Category[]>(
-          `*[_type == 'category'] | order(title asc) {
-            ...,
-            "productCount": count(*[_type == "product" && references(^._id)])
-          }`,
-        ),
-        client.fetch<Brand[]>(`*[_type == 'brand'] | order(title asc)`),
-      ]);
+      const response = await fetch("/api/shop-filters");
+
+      if (!response.ok) {
+        throw new Error("Error fetching shop filters");
+      }
+
+      const { categories: categoriesData, brands: brandsData } =
+        (await response.json()) as ShopFiltersResponse;
 
       setCategories(categoriesData ?? []);
       setBrands(brandsData ?? []);

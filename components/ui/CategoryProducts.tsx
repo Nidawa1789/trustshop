@@ -3,7 +3,6 @@ import { Category } from "@/sanity.types";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { client } from "@/sanity/lib/client";
 import { AnimatePresence, motion } from "motion/react";
 import { Loader2 } from "lucide-react";
 import ProductCard from "../ProductCard";
@@ -28,11 +27,13 @@ const CategoryProducts = ({ categories, slug }: Props) => {
   const fetchProducts = useCallback(async (categorySlug: string) => {
     setLoading(true);
     try {
-      const query = `
-        *[_type == 'product' && references(*[_type == "category" && slug.current == $categorySlug]._id)] | order(name asc){
-        ...,"categories": categories[]->title}
-      `;
-      const data = await client.fetch(query, { categorySlug });
+      const response = await fetch(`/api/products?category=${encodeURIComponent(categorySlug)}`);
+
+      if (!response.ok) {
+        throw new Error("Error fetching products");
+      }
+
+      const data = (await response.json()) as ProductForCard[];
       setProducts(data);
     } catch (error) {
       console.error("Error fetching products:", error);
