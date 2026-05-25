@@ -11,7 +11,7 @@ const Logo = ({ className, spanDesign }: { className?: string; spanDesign?: stri
           className,
         )}
       >
-        Trustsh
+        Trustsho
         <span
           className={cn(
             "text-shop_light_green group-hover:text-shop_dark_green transition-colors duration-300",
