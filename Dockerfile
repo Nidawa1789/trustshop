@@ -13,14 +13,14 @@ RUN --mount=type=cache,id=yarn-web,target=/root/.cache/yarn \
     yarn install --frozen-lockfile --network-timeout 600000
 
 COPY . .
-
+# Arguments passées au build script
 ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 ARG CLERK_SECRET_KEY
 ARG NEXT_PUBLIC_SANITY_PROJECT_ID
 ARG NEXT_PUBLIC_SANITY_DATASET
 ARG NEXT_PUBLIC_SANITY_API_VERSION
 ARG SANITY_API_READ_TOKEN
-
+# Environment variables passées au build script
 ENV NEXT_TELEMETRY_DISABLED=1 \
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY \
     CLERK_SECRET_KEY=$CLERK_SECRET_KEY \
@@ -28,23 +28,25 @@ ENV NEXT_TELEMETRY_DISABLED=1 \
     NEXT_PUBLIC_SANITY_DATASET=$NEXT_PUBLIC_SANITY_DATASET \
     NEXT_PUBLIC_SANITY_API_VERSION=$NEXT_PUBLIC_SANITY_API_VERSION \
     SANITY_API_READ_TOKEN=$SANITY_API_READ_TOKEN
-
+# Build l'application
 RUN yarn build && mkdir -p public
-
+# Création d'un stage runner
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=3000 \
     HOSTNAME=0.0.0.0
-
+# Ajout d'un groupe et d'un utilisateur
 RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs
-
+# Copie du répertoire public du stage builder
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
+# Définition de l'utilisateur à l'utilisateur nextjs
 USER nextjs
+# Exposition du port
 EXPOSE 3000
+# Démarrage de l'application
 CMD ["node", "server.js"]
