@@ -70,6 +70,37 @@ jobs:
             NEXT_PUBLIC_SANITY_API_VERSION=${{ secrets.NEXT_PUBLIC_SANITY_API_VERSION }}
             SANITY_API_READ_TOKEN=${{ secrets.SANITY_API_READ_TOKEN }}
 
+      - name: Configure AWS credentials for temporary SSH ingress
+        if: vars.EC2_DEPLOY == 'true' && vars.EC2_SECURITY_GROUP_ID != ''
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION || 'eu-west-3' }}
+
+      - name: Authorize runner SSH ingress
+        if: vars.EC2_DEPLOY == 'true' && vars.EC2_SECURITY_GROUP_ID != ''
+        id: ssh_ingress
+        env:
+          EC2_SECURITY_GROUP_ID: ${{ vars.EC2_SECURITY_GROUP_ID }}
+        run: |
+          set -euo pipefail
+          runner_ip="$(curl -fsS https://checkip.amazonaws.com | tr -d '[:space:]')"
+          ssh_cidr="${runner_ip}/32"
+          echo "ssh_cidr=${ssh_cidr}" >> "$GITHUB_OUTPUT"
+
+          if ! aws ec2 authorize-security-group-ingress \
+            --group-id "$EC2_SECURITY_GROUP_ID" \
+            --ip-permissions "IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges=[{CidrIp=${ssh_cidr},Description='GitHub Actions deploy runner'}]" \
+            2>authorize-error.log; then
+            if grep -q "InvalidPermission.Duplicate" authorize-error.log; then
+              echo "SSH ingress ${ssh_cidr} already exists."
+            else
+              cat authorize-error.log >&2
+              exit 1
+            fi
+          fi
+
       # Token court-terme du workflow pour tirer l'image GHCR depuis EC2.
       - name: Deploy on EC2
         if: vars.EC2_DEPLOY == 'true'
@@ -149,6 +180,18 @@ jobs:
               echo "Rollback succeeded. Previous stable version is running."
               exit 1
             fi
-
             echo "::error::Rollback failed. Manual intervention required."
             exit 1
+
+      - name: Revoke runner SSH ingress
+        if: always() && vars.EC2_DEPLOY == 'true' && vars.EC2_SECURITY_GROUP_ID != '' && steps.ssh_ingress.outputs.ssh_cidr != ''
+        env:
+          EC2_SECURITY_GROUP_ID: ${{ vars.EC2_SECURITY_GROUP_ID }}
+          SSH_CIDR: ${{ steps.ssh_ingress.outputs.ssh_cidr }}
+        run: |
+          set -euo pipefail
+          aws ec2 revoke-security-group-ingress \
+            --group-id "$EC2_SECURITY_GROUP_ID" \
+            --protocol tcp \
+            --port 22 \
+            --cidr "$SSH_CIDR" || true

@@ -1,0 +1,5 @@
+services:
+  nginx:
+    volumes:
+      - ../nginx/templates/http-only.conf.tmpl:/etc/nginx/templates/default.conf.tmpl:ro
+      - certbot-www:/var/www/certbot:ro

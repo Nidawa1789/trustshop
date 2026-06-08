@@ -23,10 +23,16 @@ services:
 
   nginx:
     image: nginx:1.27-alpine
+    environment:
+      NGINX_ENVSUBST_TEMPLATE_SUFFIX: .tmpl
+      TRUSTSHOP_DOMAIN: ${TRUSTSHOP_DOMAIN:?Définir TRUSTSHOP_DOMAIN (ex. trustshop.example.com)}
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ../nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../nginx/templates/default.conf.tmpl:/etc/nginx/templates/default.conf.tmpl:ro
+      - letsencrypt:/etc/letsencrypt:ro
+      - certbot-www:/var/www/certbot:ro
     depends_on:
       web:
         condition: service_healthy
@@ -37,3 +43,14 @@ services:
       retries: 5
       start_period: 10s
     restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot:latest
+    profiles: ["certbot"]
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+
+volumes:
+  letsencrypt:
+  certbot-www:
