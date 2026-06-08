@@ -139,7 +139,7 @@ jobs:
             }
 
             wait_until_healthy() {
-              for attempt in $(seq 1 12); do
+              for attempt in $(seq 1 24); do
                 if check_url; then
                   echo "Healthcheck passed on attempt ${attempt}."
                   return 0
@@ -159,6 +159,7 @@ jobs:
                 docker compose -f docker-compose.prod.yml pull web
               fi
               docker compose -f docker-compose.prod.yml up -d --remove-orphans
+              sleep 15
             }
 
             echo "Deploying ${NEW_IMAGE}"
