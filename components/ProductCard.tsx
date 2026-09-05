@@ -74,19 +74,24 @@ const ProductCard = ({ product }: { product: ProductForCard }) => {
           <p className="text-lightText text-xs tracking-wide">5 avis</p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <p className="font-medium">En stock</p>
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5">
+          {(product?.stock as number) > 0 ? (
+            <>
+              <p className="font-medium whitespace-nowrap">En stock</p>
 
-          <p
-            className={`${product?.stock === 0 ? "text-red-600" : "text-shop_dark_green/80 font-semibold"}`}
-          >
-            {(product?.stock as number) > 0 ? product?.stock : "Indisponible"}
-          </p>
+              <p className="text-shop_dark_green/80 font-semibold">{product?.stock}</p>
+            </>
+          ) : (
+            <p className="font-medium whitespace-nowrap text-red-600">Indisponible</p>
+          )}
         </div>
 
         <PriceView price={product?.price} discount={product?.discount} className="text-sm" />
 
-        <AddToCartButton product={product} className="w-40 rounded-full" />
+        <AddToCartButton
+          product={product}
+          className="w-full rounded-full text-xs [&_svg]:hidden sm:text-sm sm:[&_svg]:block"
+        />
       </div>
     </div>
   );
