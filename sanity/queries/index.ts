@@ -16,10 +16,10 @@ import {
 const getCategories = async (quantity?: number): Promise<Category[]> => {
   try {
     const query = quantity
-      ? `*[_type == 'category'] | order(title asc) [0...$quantity] {
+      ? `*[_type == 'category'] {
           ...,
           "productCount": count(*[_type == "product" && references(^._id)])
-        }`
+        }[productCount > 0] | order(productCount desc, title asc) [0...$quantity]`
       : `*[_type == 'category'] | order(title asc) {
           ...,
           "productCount": count(*[_type == "product" && references(^._id)])
